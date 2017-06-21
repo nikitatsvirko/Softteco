@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.application.nikita.softteco.activities.MainActivity">
+
+
+    <Button
+        android:id="@+id/saveLogcatButton"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="end"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:padding="5dp"
+        android:text="@string/saveLogcatButtonText"
+        android:textColor="@android:color/white"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/image"/>
+
+    <ListView
+        android:id="@+id/posts_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:paddingTop="10dp"/>
+
+</LinearLayout>

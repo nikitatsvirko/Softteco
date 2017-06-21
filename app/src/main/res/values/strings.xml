@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Softteco</string>
+    <string name="saveLogcatButtonText">Save Logcat</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="saveUser_button_text">Save User</string>
+</resources>
