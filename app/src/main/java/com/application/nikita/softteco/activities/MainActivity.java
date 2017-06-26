@@ -1,16 +1,16 @@
 package com.application.nikita.softteco.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,7 +19,9 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.nikita.softteco.R;
+import com.application.nikita.softteco.adapters.GridFragmentPageAdapter;
 import com.application.nikita.softteco.adapters.PostsAdapter;
+import com.application.nikita.softteco.entities.GridItem;
 import com.application.nikita.softteco.entities.Post;
 
 import org.json.JSONArray;
@@ -34,13 +36,20 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mImage;
     private Button mSaveButton;
     private Animation animation;
-    private ListView mPostsList;
     private PostsAdapter mPostsAdapter;
     private ArrayList<Post> mPosts;
+    private ArrayList<GridItem> mPostsList = new ArrayList<>();
+    private LinearLayout mDotsIndicator;
+    private ViewPager mViewPager;
+    private ImageView[] mDots;
+    private GridFragmentPageAdapter mGridFragmentPageAdapter;
 
     private JsonArrayRequest mJsonArrayRequest;
     private RequestQueue mRequestQueue;
     private final String REQUEST_TAG = "Volley Request";
+    private int mDotsCount;
+    private int mFragmentsCount = 0;
+    private int mItemsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +112,50 @@ public class MainActivity extends AppCompatActivity {
                     object.getInt("id"),
                     object.getString("title"),
                     object.getString("body")));
+            GridItem item = new GridItem();
+            item.setId(String.valueOf(object.getInt("id")));
+            item.setUserId(String.valueOf(object.getInt("userId")));
+            item.setTitle(object.getString("title"));
+            mPostsList.add(item);
         }
 
-        mPostsAdapter = new PostsAdapter(getApplicationContext(), mPosts);
-        mPostsList.setAdapter(mPostsAdapter);
+        mGridFragmentPageAdapter = new GridFragmentPageAdapter(getSupportFragmentManager(), mPostsList, getResources());
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager.setAdapter(mGridFragmentPageAdapter);
+
+        mDotsIndicator = (LinearLayout) findViewById(R.id.scroll_indicator);
+        mDotsCount = mGridFragmentPageAdapter.getCount();
+        mDots = new ImageView[mDotsCount];
+        for (int i = 0; i < mDotsCount; i++) {
+            mDots[i] = new ImageView(this);
+            mDots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(8, 0, 8, 0);
+            mDotsIndicator.addView(mDots[i], params);
+        }
+        mDots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                for (int i = 0; i < mDotsCount; i++) {
+                    mDots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
+                }
+                mDots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void setUIComponents() {
@@ -120,14 +169,6 @@ public class MainActivity extends AppCompatActivity {
                 onSaveButtonClicked();
             }
         });
-
-        mPostsList = (ListView) findViewById(R.id.posts_list);
-        mPostsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                onPostItemClicked(position);
-            }
-        });
     }
 
     private void setUpAnimation() {
@@ -137,13 +178,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationStart(Animation animation) {
                 mSaveButton.setVisibility(View.INVISIBLE);
-                mPostsList.setEnabled(false);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 mSaveButton.setVisibility(View.VISIBLE);
-                mPostsList.setEnabled(true);
             }
 
             @Override
@@ -156,17 +195,12 @@ public class MainActivity extends AppCompatActivity {
     private void onSaveButtonClicked() {
         Log.w(TAG, "Before Logcat save");
         try {
+            Log.w(TAG, "Trying to save Logcat");
             Process process = Runtime.getRuntime().exec("logcat -d");
             process = Runtime.getRuntime().exec("logcat -f " + "/storage/emulated/0/"+"Logging.txt");
         } catch (Exception e) {
+            Log.w(TAG, "Error while saving Logcat");
             e.printStackTrace();
         }
-    }
-
-    private void onPostItemClicked(int position) {
-        Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
-        intent.putExtra("post_ID", mPosts.get(position).getId());
-        intent.putExtra("user_ID", mPosts.get(position).getUserId());
-        startActivity(intent);
     }
 }

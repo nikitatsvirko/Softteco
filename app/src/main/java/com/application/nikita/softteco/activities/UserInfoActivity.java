@@ -52,8 +52,8 @@ public class UserInfoActivity extends AppCompatActivity {
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase dbWrite, dbRead;
 
-    private int userID;
-    private int postID;
+    private String userID;
+    private String postID;
     private User mUser = new User();
 
     @Override
@@ -61,8 +61,8 @@ public class UserInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
-        userID = getIntent().getIntExtra("user_ID", 0);
-        postID = getIntent().getIntExtra("post_ID", 0);
+        userID = getIntent().getStringExtra("user_ID");
+        postID = getIntent().getStringExtra("post_ID");
 
         loadUser(userID);
     }
@@ -107,8 +107,8 @@ public class UserInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void loadUser(int id) {
-        final String requestURL = "http://jsonplaceholder.typicode.com/users/" + String.valueOf(id);
+    private void loadUser(String id) {
+        final String requestURL = "http://jsonplaceholder.typicode.com/users/" + id;
         mRequestQueue = Volley.newRequestQueue(this);
 
         mJsonObjectRequest = new JsonObjectRequest(requestURL, null,
