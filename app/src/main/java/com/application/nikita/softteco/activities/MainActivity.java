@@ -21,7 +21,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.nikita.softteco.R;
 import com.application.nikita.softteco.adapters.GridFragmentPageAdapter;
-import com.application.nikita.softteco.adapters.PostsAdapter;
 import com.application.nikita.softteco.entities.GridItem;
 import com.application.nikita.softteco.entities.Post;
 
@@ -39,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mImage;
     private Button mSaveButton;
     private Animation animation;
-    private PostsAdapter mPostsAdapter;
     private ArrayList<Post> mPosts;
     private ArrayList<GridItem> mPostsList = new ArrayList<>();
     private LinearLayout mDotsIndicator;
@@ -51,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue mRequestQueue;
     private final String REQUEST_TAG = "Volley Request";
     private int mDotsCount;
-    private int mFragmentsCount = 0;
-    private int mItemsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,9 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
-            return true;
-        }
-        return false;
+
+        return Environment.MEDIA_MOUNTED.equals( state );
     }
 }

@@ -80,17 +80,17 @@ public class UserInfoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Contact #" + userID);
 
-        TextView mPostID = (TextView) findViewById(R.id.postId);
+        mPostID = (TextView) findViewById(R.id.postId);
         mPostID.setText(String.valueOf(postID));
-        TextView mUserName = (TextView) findViewById(R.id.userName);
+        mUserName = (TextView) findViewById(R.id.userName);
         mUserName.setText(mUser.getName());
-        TextView mUserNickname = (TextView) findViewById(R.id.userNickname);
+        mUserNickname = (TextView) findViewById(R.id.userNickname);
         mUserNickname.setText(mUser.getUsername());
-        final TextView mUserPhone = (TextView) findViewById(R.id.userPhone);
+        mUserPhone = (TextView) findViewById(R.id.userPhone);
         mUserPhone.setText(mUser.getPhone());
-        TextView mUserEmail = (TextView) findViewById(R.id.userEmail);
+        mUserEmail = (TextView) findViewById(R.id.userEmail);
         mUserEmail.setText(mUser.getEmail());
-        TextView mUserAddress = (TextView) findViewById(R.id.userAddress);
+        mUserAddress = (TextView) findViewById(R.id.userAddress);
         mUserAddress.setText(mUser.getAddress().getCity());
         mUserAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +98,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 onAddressClicked();
             }
         });
-        Button mSaveUser = (Button) findViewById(R.id.saveUser);
+        mSaveUser = (Button) findViewById(R.id.saveUser);
         mSaveUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
