@@ -1,6 +1,7 @@
 package com.application.nikita.softteco.activities;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -194,13 +197,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSaveButtonClicked() {
         Log.w(TAG, "Before Logcat save");
-        try {
-            Log.w(TAG, "Trying to save Logcat");
-            Process process = Runtime.getRuntime().exec("logcat -d");
-            process = Runtime.getRuntime().exec("logcat -f " + "/storage/emulated/0/"+"Logging.txt");
-        } catch (Exception e) {
-            Log.w(TAG, "Error while saving Logcat");
-            e.printStackTrace();
+        if ( isExternalStorageWritable() ) {
+
+            File appDirectory = new File( Environment.getExternalStorageDirectory() + "/SofttecoApp" );
+            File logDirectory = new File( appDirectory + "/log" );
+            File logFile = new File( logDirectory, "logcat" + System.currentTimeMillis() + ".txt" );
+
+            if ( !appDirectory.exists() ) {
+                appDirectory.mkdir();
+            }
+
+            if ( !logDirectory.exists() ) {
+                logDirectory.mkdir();
+            }
+
+            try {
+                Process process = Runtime.getRuntime().exec( "logcat -c");
+                process = Runtime.getRuntime().exec( "logcat -f " + logFile + " *:S MainActivity:D UserInfoActivity:D");
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+
         }
+    }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
+            return true;
+        }
+        return false;
     }
 }
